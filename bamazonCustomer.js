@@ -1,7 +1,6 @@
 var dotenv = require("dotenv").config();
 const mysql = require("mysql");
 const inquirer = require("inquirer");
-// const colors = require("colors/safe");
 var Table = require('cli-table');
 
 var keys = require("./keys.js");
@@ -19,43 +18,101 @@ bamazon.connect(function (err) {
 });
 
 function main() {
+    displayInventory();
+}
 
- displayInventory();
-    // promptStore();
+function exitStore() {
+    bamazon.end();
 }
 
 function displayInventory() {
 
     const table = new Table({
-        head: ['Product', 'Department', 'Price', 'Qty In Stock'],
-        colWidths: [30, 20, 15, 15]
+        head: ['Product #', 'Department', 'Product', 'Price', 'Qty In Stock'],
+        colWidths: [15, 20, 30, 15, 15]
     });
 
-    var query = bamazon.query("SELECT * FROM bamazon.products ORDER BY department_name, product_name ASC", function (err, res) {
+    var query = bamazon.query("SELECT * FROM bamazon.products WHERE stock_quantity > 0 ORDER BY department_name, product_name ASC", function (err, res) {
         if (err) throw (err);
 
-        for (let i = 0; (i < res.length); i++) {
+        for (let i = 0;
+            (i < res.length); i++) {
             var row = [];
+            row.push(res[i].item_id);
+            row.push(res[i].department_name);
             row.push(res[i].product_name);
-            row.push( res[i].department_name);
-            row.push( res[i].price);
-            row.push( res[i].stock_quantity);
+            row.push(res[i].price);
+            row.push(res[i].stock_quantity);
             table.push(row);
         }
 
         console.log(table.toString());
-        
-        bamazon.end();
+        promptStore();
     });
- 
+
 }
 
 function promptStore() {
+    var questions = [{
+            type: 'input',
+            name: 'itemNum',
+            message: 'What item # would you like to buy?'
+        },
+        {
+            type: 'input',
+            name: 'quantity',
+            message: 'How many would you like to buy?',
+            when: function (answers) {
+                return answers.itemNum;
+            }
+        }
+    ];
+
+    inquirer.prompt(questions).then(answers => {
+        queryItem(answers.itemNum, answers.quantity);
+    });
 
 }
 
-/*****************/
-/* Start the app */
-/*****************/
+function queryItem(itemNum, requestedQuantity) {
+    var post = {
+        item_id: itemNum
+    };
+    var query = bamazon.query("SELECT product_name, price, stock_quantity FROM bamazon.products WHERE ?", post, function (err, res) {
+        if (err) throw err;
 
-main();
+        if (parseInt(res[0].stock_quantity) >= parseInt(requestedQuantity)) {
+            purchaseItem(requestedQuantity, res[0]);
+        } else {
+            console.log("\nI'm sorry,  we don't have enough of that item in stock.  We'll have more in soon!");
+            exitStore();
+        }
+
+    });
+}
+
+function purchaseItem(requestedQuantity, item) {
+
+    var newQty = parseInt(item.stock_quantity) - parseInt(requestedQuantity);
+    var query = bamazon.query(
+        "UPDATE bamazon.products SET ? WHERE ?",
+        [{
+            stock_quantity: newQty
+         },
+         {
+            product_name: item.product_name
+         }],
+        function (err, res) {
+            if (err) throw err;
+            console.log("Success!  Thank you for purchasing (" + requestedQuantity + ") items(s) of " + item.product_name + "\n" + "Your order will be shipped to the address on file\n");
+            exitStore();
+        }
+    ); 
+}
+
+
+    /*****************/
+    /* Start the app */
+    /*****************/
+
+    main();
