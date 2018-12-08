@@ -13,12 +13,15 @@ var bamazon = mysql.createConnection({
     password: keys.mysql.password
 });
 
+/*---------------------------*/
+/* Entry point to application */
+/*---------------------------*/
 bamazon.connect(function (err) {
     if (err) throw err;
-    console.log("Connected!");
+    start();
 });
 
-function main() {
+function start() {
     displayInventory();
 }
 
@@ -131,9 +134,4 @@ function promptAnotherPurchase() {
     });
 }
 
-
-/*****************/
-/* Start the app */
-/*****************/
-
-main();
+module.exports =  displayInventory;
