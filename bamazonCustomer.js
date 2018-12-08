@@ -2,6 +2,7 @@ var dotenv = require("dotenv").config();
 const mysql = require("mysql");
 const inquirer = require("inquirer");
 var Table = require('cli-table');
+var colors = require('colors/safe');
 
 var keys = require("./keys.js");
 
@@ -97,22 +98,42 @@ function purchaseItem(requestedQuantity, item) {
     var query = bamazon.query(
         "UPDATE bamazon.products SET ? WHERE ?",
         [{
-            stock_quantity: newQty
-         },
-         {
-            product_name: item.product_name
-         }],
+                stock_quantity: newQty
+            },
+            {
+                product_name: item.product_name
+            }
+        ],
         function (err, res) {
             if (err) throw err;
-            console.log("Success!  Thank you for purchasing (" + requestedQuantity + ") items(s) of " + item.product_name + "\n" + "Your order will be shipped to the address on file\n");
+            var totalCost = Math.round(parseInt(requestedQuantity) * parseFloat(item.price) * 100) / 100;
+            console.log("\nSuccess! Thank you for purchasing (" + colors.green(requestedQuantity) + ") " + colors.green(item.product_name) + "(s)");
+            console.log("Your account will be billed for a total of " + colors.red("$" + totalCost) + " and your order will be shipped to the address on file\n");
+
+            promptAnotherPurchase();
+        }
+    );
+}
+
+function promptAnotherPurchase() {
+    var questions = [{
+        type: 'confirm',
+        name: 'choice',
+        message: 'Would you like to continue shopping?'
+    }];
+    inquirer.prompt(questions).then(answers => {
+        if (answers.choice) {
+            displayInventory();
+        } else {
+            console.log("\nThank you!  Come again soon! We appreciate your business!");
             exitStore();
         }
-    ); 
+    });
 }
 
 
-    /*****************/
-    /* Start the app */
-    /*****************/
+/*****************/
+/* Start the app */
+/*****************/
 
-    main();
+main();
