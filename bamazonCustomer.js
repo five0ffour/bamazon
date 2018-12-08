@@ -35,8 +35,12 @@ function displayInventory() {
         head: ['Product #', 'Department', 'Product', 'Price', 'Qty In Stock'],
         colWidths: [15, 20, 30, 15, 15]
     });
-
-    var query = bamazon.query("SELECT * FROM bamazon.products WHERE stock_quantity > 0 ORDER BY department_name, product_name ASC", function (err, res) {
+    
+    var query = "SELECT item_id, department_name, product_name, price, stock_quantity FROM bamazon.products " + 
+                "INNER JOIN bamazon.departments ON products.department_id = departments.department_id " +
+                "WHERE stock_quantity > 0 " + 
+                "ORDER BY department_name, product_name ASC";
+    bamazon.query(query, function (err, res) {
         if (err) throw (err);
 
         for (let i = 0;
