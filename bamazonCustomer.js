@@ -92,7 +92,7 @@ function queryItem(itemNum, requestedQuantity) {
             purchaseItem(requestedQuantity, res[0]);
         } else {
             console.log("\nI'm sorry,  we don't have enough of that item in stock.  We'll have more in soon!");
-            exitStore();
+            promptAnotherPurchase();
         }
 
     });
@@ -129,12 +129,10 @@ function promptAnotherPurchase() {
     }];
     inquirer.prompt(questions).then(answers => {
         if (answers.choice) {
-            displayInventory();
+            displayAvailableInventory();
         } else {
             console.log("\nThank you!  Come again soon! We appreciate your business!");
             exitStore();
         }
     });
 }
-
-module.exports =  displayInventory;

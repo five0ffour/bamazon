@@ -45,7 +45,7 @@ function mainMenu(choice) {
             break;
 
         case "Add New Product":
-            addNewProduct();
+            promptToAddNewProduct();
             break;
 
         case "Exit Store":
@@ -153,7 +153,44 @@ function postNewItems(itemNum, newQty) {
     });
 }
 
-function addNewProduct() {
-    console.log("\nadd new product\n");
-    start();
+function promptToAddNewProduct() {
+    var questions = [{
+            type: 'input',
+            name: 'itemNum',
+            message: 'What is the item # for the new product being added?'
+        },
+        {
+            type: 'input',
+            name: 'quantity',
+            message: 'How many units will you be adding?',
+            when: function (answers) {
+                return answers.itemNum;
+            }
+        },
+        {
+            type: 'input',
+            name: 'department',
+            message: 'Which department you will add it to?',
+            when: function (answers) {
+                return answers.quantity;
+            }
+        },
+        {
+            type: 'input',
+            name: 'price',
+            message: 'What price will it be listed at?',
+            when: function (answers) {
+                return answers.department;
+            }
+        }
+    ];
+
+    inquirer.prompt(questions).then(answers => {
+        addNewProduct(answers);
+    });
+}
+
+function addNewProduct(answers) {
+    console.log("Adding new products");
+    console.log(answers);
 }
