@@ -5,11 +5,10 @@ var Table = require('cli-table');
 var colors = require('colors/safe');
 
 var keys = require("./keys.js");
-// var displayInventory = require("./bamazonCustomer.js");
 
 var bamazon = mysql.createConnection({
     host: keys.mysql.host,
-    port: 3306,
+    port: keys.mysql.port,
     user: keys.mysql.user,
     password: keys.mysql.password
 });
@@ -35,16 +34,19 @@ function start() {
 function mainMenu(choice) {
     switch (choice) {
         case "View Products for Sale":
-            displayInventory();
+            displayAllInventory();
             break;
 
         case "View Low Inventory":
+            displayLowInventory();
             break;
 
         case "Add to Inventory":
+            addToInventory();
             break;
 
         case "Add New Product":
+            addNewProduct();
             break;
 
         case "Exit Store":
@@ -59,32 +61,60 @@ function exitStore() {
     bamazon.end();
 }
 
-function displayInventory() {
+function displayAllInventory() {
+
+    var query = "SELECT item_id, department_name, product_name, price, stock_quantity FROM bamazon.products " +
+        "INNER JOIN bamazon.departments ON products.department_id = departments.department_id " +
+        "ORDER BY department_name, product_name ASC";
+    bamazon.query(query, function (err, res) {
+        if (err) throw (err);
+
+        displayInventoryTable(res);
+        start();
+    });
+}
+
+function displayLowInventory() {
+
+    var query = "SELECT item_id, department_name, product_name, price, stock_quantity FROM bamazon.products " +
+        "INNER JOIN bamazon.departments ON products.department_id = departments.department_id " +
+        "WHERE stock_quantity <= 5 " +
+        "ORDER BY department_name, product_name ASC";
+    bamazon.query(query, function (err, res) {
+        if (err) throw (err);
+
+        displayInventoryTable(res);
+        start();
+    });
+}
+
+function displayInventoryTable(res) {
 
     const table = new Table({
         head: ['Product #', 'Department', 'Product', 'Price', 'Qty In Stock'],
         colWidths: [15, 20, 30, 15, 15]
     });
-    
-    var query = "SELECT item_id, department_name, product_name, price, stock_quantity FROM bamazon.products " + 
-                "INNER JOIN bamazon.departments ON products.department_id = departments.department_id " +
-                "WHERE stock_quantity > 0 " + 
-                "ORDER BY department_name, product_name ASC";
-    bamazon.query(query, function (err, res) {
-        if (err) throw (err);
 
-        for (let i = 0;
-            (i < res.length); i++) {
-            var row = [];
-            row.push(res[i].item_id);
-            row.push(res[i].department_name);
-            row.push(res[i].product_name);
-            row.push(res[i].price);
-            row.push(res[i].stock_quantity);
-            table.push(row);
-        }
+    for (let i = 0;
+        (i < res.length); i++) {
+        var row = [];
+        row.push(res[i].item_id);
+        row.push(res[i].department_name);
+        row.push(res[i].product_name);
+        row.push(res[i].price);
+        row.push(res[i].stock_quantity);
+        table.push(row);
+    }
 
-        console.log(table.toString());
-        start();
-    });
+    console.log(table.toString());
+}
+
+function addToInventory() {
+    console.log("\nadd to inventory\n");
+    start();
+}
+
+function addNewProduct() {
+    console.log("\nadd new product\n");
+    start();
 }

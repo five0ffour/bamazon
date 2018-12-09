@@ -22,14 +22,14 @@ bamazon.connect(function (err) {
 });
 
 function start() {
-    displayInventory();
+    displayAvailableInventory();
 }
 
 function exitStore() {
     bamazon.end();
 }
 
-function displayInventory() {
+function displayAvailableInventory() {
 
     const table = new Table({
         head: ['Product #', 'Department', 'Product', 'Price', 'Qty In Stock'],
@@ -57,7 +57,6 @@ function displayInventory() {
         console.log(table.toString());
         promptStore();
     });
-
 }
 
 function promptStore() {
