@@ -53,3 +53,7 @@ select item_id, department_name, product_name, price, stock_quantity FROM bamazo
 INNER JOIN departments ON products.department_id = departments.department_id
 WHERE stock_quantity > 0
 ORDER BY department_name, product_name ASC;
+
+UPDATE bamazon.products
+SET stock_quantity = 14
+WHERE item_id = 39583

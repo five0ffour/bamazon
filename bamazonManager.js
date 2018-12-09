@@ -28,7 +28,6 @@ function start() {
     inquirer.prompt(questions).then(answers => {
         mainMenu(answers.choice);
     });
-
 }
 
 function mainMenu(choice) {
@@ -42,7 +41,7 @@ function mainMenu(choice) {
             break;
 
         case "Add to Inventory":
-            addToInventory();
+            promptToAddNewStock();
             break;
 
         case "Add New Product":
@@ -109,9 +108,49 @@ function displayInventoryTable(res) {
     console.log(table.toString());
 }
 
-function addToInventory() {
-    console.log("\nadd to inventory\n");
-    start();
+function promptToAddNewStock() {
+    var questions = [{
+            type: 'input',
+            name: 'itemNum',
+            message: 'Which item # would you stock up?'
+        },
+        {
+            type: 'input',
+            name: 'quantity',
+            message: 'How many units will you be adding?',
+            when: function (answers) {
+                return answers.itemNum;
+            }
+        }
+    ];
+
+    inquirer.prompt(questions).then(answers => {
+        addItemsToInventory(parseInt(answers.itemNum), answers.quantity);
+    });
+}
+
+function addItemsToInventory(itemNum, newItems) {
+    let post = {
+        "item_id": itemNum
+    };
+    let query = "SELECT stock_quantity FROM bamazon.products " +
+        "WHERE ? ";
+    bamazon.query(query, post, function (err, res) {
+        if (err) throw (err);
+
+        var newQty = parseInt(newItems) + parseInt(res[0].stock_quantity);
+        postNewItems(itemNum, newQty);
+    });
+}
+
+function postNewItems(itemNum, newQty) {
+    let query = "UPDATE bamazon.products SET stock_quantity=? WHERE item_id=? ";
+    bamazon.query(query, [newQty, itemNum], function (err, res) {
+        if (err) throw (err);
+
+        console.log("\n Success!  New item(s) added to the inventory\n");
+        displayAllInventory();
+    });
 }
 
 function addNewProduct() {

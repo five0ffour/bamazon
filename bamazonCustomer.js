@@ -8,7 +8,7 @@ var keys = require("./keys.js");
 
 var bamazon = mysql.createConnection({
     host: keys.mysql.host,
-    port: 3306,
+    port: keys.mysql.port,
     user: keys.mysql.user,
     password: keys.mysql.password
 });
