@@ -1,12 +1,12 @@
-var dotenv = require("dotenv").config();
+const dotenv = require("dotenv").config();
 const mysql = require("mysql");
 const inquirer = require("inquirer");
-var Table = require('cli-table');
-var colors = require('colors/safe');
+const Table = require('cli-table');
+const colors = require('colors/safe');
 
-var keys = require("./keys.js");
+const keys = require("./keys.js");
 
-var bamazon = mysql.createConnection({
+const bamazon = mysql.createConnection({
     host: keys.mysql.host,
     port: keys.mysql.port,
     user: keys.mysql.user,
@@ -153,26 +153,37 @@ function postNewItems(itemNum, newQty) {
     });
 }
 
+//---------------------------
+
 function promptToAddNewProduct() {
+
     var questions = [{
             type: 'input',
             name: 'itemNum',
-            message: 'What is the item # for the new product being added?'
+            message: 'What is the item number for the new product being added?'
         },
         {
             type: 'input',
-            name: 'quantity',
-            message: 'How many units will you be adding?',
+            name: 'itemName',
+            message: 'What is the name of the product?',
             when: function (answers) {
                 return answers.itemNum;
             }
         },
         {
             type: 'input',
-            name: 'department',
-            message: 'Which department you will add it to?',
+            name: 'departmentNum',
+            message: 'Which department (number) would you like to add it to?',
             when: function (answers) {
-                return answers.quantity;
+                return answers.itemNum;
+            }
+        },
+        {
+            type: 'input',
+            name: 'quantity',
+            message: 'How many units will you be adding?',
+            when: function (answers) {
+                return answers.departmentNum;
             }
         },
         {
@@ -180,7 +191,7 @@ function promptToAddNewProduct() {
             name: 'price',
             message: 'What price will it be listed at?',
             when: function (answers) {
-                return answers.department;
+                return answers.quantity;
             }
         }
     ];
@@ -191,6 +202,23 @@ function promptToAddNewProduct() {
 }
 
 function addNewProduct(answers) {
-    console.log("Adding new products");
-    console.log(answers);
+
+    let post = [
+        answers.itemNum,
+        answers.itemName,
+        answers.departmentNum,
+        answers.price,
+        answers.quantity
+    ];
+    let query = "INSERT INTO bamazon.products (item_id, product_name, department_id, price, stock_quantity)" + 
+                "VALUES (?, ?, ?, ?, ?)";
+    bamazon.query(query, post, function (err, res) {
+        if (err) throw (err);
+
+        console.log("\nSuccess! Your product(s) " + colors.green(answers.itemName) + " were succssfully added to the inventory\n");
+
+        displayAllInventory();
+    });
 }
+
+
