@@ -23,7 +23,7 @@ function start() {
         type: 'rawlist',
         name: 'choice',
         message: 'What would you like to do?',
-        choices: ["View Products for Sale", "View Low Inventory", "Add to Inventory", "Add New Product", "Exit Store"]
+        choices: ["View Product Sales by Department", "Create New Department", "Exit Store"]
     }];
     inquirer.prompt(questions).then(answers => {
         mainMenu(answers.choice);
@@ -34,12 +34,11 @@ function start() {
 function mainMenu(choice) {
     switch (choice) {
         case "View Product Sales by Department":
-            console.log("View Product Sales by Department");
+            displaySalesByDepartment();
             break;
 
         case "Create New Department":
-            console.log("Create New Department");
-            getDepartments();
+            promptCreateNewDepartment();
             break;
 
         case "Exit Store":
@@ -53,15 +52,26 @@ function exitStore() {
     bamazon.end();
 }
 
+function displaySalesByDepartment() {
+    console.log("View Product Sales by Department");
+    start();
+}
+
+function promptCreateNewDepartment()
+{
+    console.log("Create New Department");
+    getDepartments();
+}
+
+
 function getDepartments() {
     let query = "SELECT department_id, department_name FROM bamazon.departments ";
     bamazon.query(query, function (err, res) {
         if (err) reject("Error with get Departments!");
 
         let departments = [];
-        let dept = {};
-        for (let i = 0;
-            (i < res.length); i++) {
+        for (let i = 0; (i < res.length); i++) {
+            let dept = {};
             dept.department_id = res[i].department_id;
             dept.department_name = res[i].department_name;
             departments.push(dept);
@@ -86,4 +96,5 @@ function displayDepartmentTable(departments) {
     }
 
     console.log(table.toString());
+    start();
 }
