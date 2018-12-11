@@ -22,7 +22,32 @@ bamazon.connect(function (err) {
 });
 
 function start() {
-    displayAvailableInventory();
+    var questions = [{
+        type: 'rawlist',
+        name: 'choice',
+        message: 'What would you like to do?',
+        choices: ["View Product For Sale", "Purchase an Item", "Exit Store"]
+    }];
+    inquirer.prompt(questions).then(answers => {
+        mainMenu(answers.choice);
+    });
+}
+
+function mainMenu(choice) {
+    switch (choice) {
+        case "View Product For Sale":
+            displayAvailableInventory();
+            break;
+
+        case "Purchase an Item":
+            promptStore();
+            break;
+
+        case "Exit Store":
+        default:
+            exitStore();
+            break;
+    }
 }
 
 function exitStore() {
@@ -55,7 +80,7 @@ function displayAvailableInventory() {
         }
 
         console.log(table.toString());
-        promptStore();
+        start();
     });
 }
 
