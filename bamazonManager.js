@@ -210,8 +210,8 @@ function addNewProduct(answers) {
         answers.price,
         answers.quantity
     ];
-    let query = "INSERT INTO bamazon.products (item_id, product_name, department_id, price, stock_quantity)" + 
-                "VALUES (?, ?, ?, ?, ?)";
+    let query = "INSERT INTO bamazon.products (item_id, product_name, department_id, price, stock_quantity, product_sales)" + 
+                "VALUES (?, ?, ?, ?, ?, 0)";
     bamazon.query(query, post, function (err, res) {
         if (err) throw (err);
 

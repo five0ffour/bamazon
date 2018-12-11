@@ -30,7 +30,6 @@ function start() {
     });
 }
 
-
 function mainMenu(choice) {
     switch (choice) {
         case "View Product Sales by Department":
@@ -53,48 +52,117 @@ function exitStore() {
 }
 
 function displaySalesByDepartment() {
-    console.log("View Product Sales by Department");
-    start();
-}
 
-function promptCreateNewDepartment()
-{
-    console.log("Create New Department");
-    getDepartments();
-}
-
-
-function getDepartments() {
-    let query = "SELECT department_id, department_name FROM bamazon.departments ";
+    var query = "SELECT departments.department_id, department_name, overhead_costs, " +
+                "SUM(product_sales) as product_sales, (SUM(product_sales) - departments.overhead_costs) AS total_profit " + 
+                "FROM bamazon.products " + 
+                "INNER JOIN bamazon.departments ON products.department_id = departments.department_id " +
+                "GROUP BY (department_id) " + 
+                "ORDER BY department_id ASC ";
+    
     bamazon.query(query, function (err, res) {
-        if (err) reject("Error with get Departments!");
+        if (err) throw (err);
 
-        let departments = [];
-        for (let i = 0; (i < res.length); i++) {
-            let dept = {};
-            dept.department_id = res[i].department_id;
-            dept.department_name = res[i].department_name;
-            departments.push(dept);
-        }
-
-        displayDepartmentTable(departments);
+        displayDepartmentSalesTable(res);
+        start();
     });
 }
 
-function displayDepartmentTable(departments) {
-    const table = new Table({
-        head: ['Department #', 'Department'],
-        colWidths: [15, 20]
+function promptCreateNewDepartment() {
+    var questions = [{
+        type: 'input',
+        name: 'departmentNum',
+        message: 'What is the new department number?',
+    },
+    {
+        type: 'input',
+        name: 'departmentName',
+        message: 'What is the new department name?',
+    },
+    {
+        type: 'input',
+        name: 'overheadCosts',
+        message: 'What is the department overhead costs?',
+    },
+    ];
+    inquirer.prompt(questions).then(answers => {
+        let dept = {}
+        dept.department_id = answers.departmentNum;
+        dept.department_name = answers.departmentName,
+        dept.overhead_costs = answers.overheadCosts;
+        addNewDeparment(dept);
+    });
+}
+
+function addNewDeparment(newDepartment) {
+    var post = [
+        newDepartment.department_id,
+        newDepartment.department_name,
+        newDepartment.overhead_costs
+    ];
+    let query = "INSERT INTO bamazon.departments (department_id, department_name, overhead_costs) " + 
+                 "VALUES( ?, ? , ?)";
+    bamazon.query(query, post, function (err, res) {
+        if (err) throw(err);
+
+        console.log("\nSuccess!  Added " + colors.green(newDepartment.department_name) + " to the department database");
+        displayAllDepartments();
     });
 
-    for (let i = 0;
-        (i < departments.length); i++) {
+}
+
+function displayDepartmentSalesTable(res) {
+
+    const table = new Table({
+        head: ['Department #', 'Department Name', 'Product Sales', 'Overhead Cost', 'Total Profit'],
+        colWidths: [15, 20, 15, 15, 15]
+    });
+
+    for (let i = 0; (i < res.length); i++) {
+
         let row = [];
-        row.push(departments[i].department_id);
-        row.push(departments[i].department_name);
+        row.push(res[i].department_id);
+        row.push(res[i].department_name);
+        row.push(res[i].product_sales);
+        row.push(res[i].overhead_costs);
+        row.push(res[i].total_profit);
+
         table.push(row);
     }
 
     console.log(table.toString());
-    start();
 }
+
+
+function displayAllDepartments() {
+
+    var query = "SELECT department_id, department_name, overhead_costs " +
+                "FROM bamazon.departments " +
+                "ORDER BY department_id ASC"
+    bamazon.query(query, function (err, res) {
+        if (err) throw (err);
+
+        displayDepartmentTable(res);
+        start();
+    });
+}
+
+function displayDepartmentTable(res) {
+
+    const table = new Table({
+        head: ['Department #', 'Department Name', 'Overhead Cost'],
+        colWidths: [15, 20, 15]
+    });
+
+    for (let i = 0; (i < res.length); i++) {
+
+        let row = [];
+        row.push(res[i].department_id);
+        row.push(res[i].department_name);
+        row.push(res[i].overhead_costs);
+        table.push(row);
+    }
+
+    console.log(table.toString());
+}
+

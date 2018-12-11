@@ -26,9 +26,9 @@ VALUES
 (29173, "Baseball glove", 5, 89.99, 10, 0),
 (67771, "Men's watch", 2, 199.99, 20, 0),
 (92746, "Forza 7 Motorsports", 6, 39.99, 3, 0),
-(39583, "Hotel-style Bathrobe", 3, 100, 10, 0),
+(39583, "Bathrobe, Hotel-style", 3, 100, 10, 0),
 (00918, "Blue Jeans", 2, 49.99, 12, 0),
-(17261, "Wool Hiking Socks", 2, 29.99, 40, 0),
+(17261, "Hiking Socks, Wool", 2, 29.99, 40, 0),
 (11883, "Bamazon Echo", 4, 49.99, 100, 0),
 (76443, "Samsung Television", 4, 800, 30, 0),
 (44432, "Yo-Yo", 6, 4.99, 50, 0),
@@ -54,3 +54,11 @@ select item_id, department_name, product_name, price, stock_quantity FROM bamazo
 INNER JOIN departments ON products.department_id = departments.department_id
 WHERE stock_quantity > 0
 ORDER BY department_name, product_name ASC;
+
+SELECT departments.department_id, department_name, product_sales, overhead_costs, SUM(product_sales) as department_sales, (SUM(product_sales) - departments.overhead_costs) AS total_profit FROM bamazon.products
+INNER JOIN bamazon.departments ON products.department_id = departments.department_id
+GROUP BY (department_id)
+ORDER BY department_id ASC;
+
+SELECT department_id, department_name, overhead_costs 
+FROM bamazon.departments
