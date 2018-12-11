@@ -19,15 +19,18 @@ Each of the videos provides an example of to use each of the applications:
   
 __1) Bamazon Customer Portal__     
   Video file to demontrate the Bamazon Customer application (displays inventory and a sample purchase)   
-![node bamazonCustomer.js](./assets/images/example-customer.mp4)  
+![Customer Portal](./assets/images/example-customer.gif)  
+![Customer - MP4 Download](./assets/images/example-customer.mp4)  
   
 __2) Bonus Feature - Bamazon Manager Portal__    
   Video file to demontrate the Department Manager application  (displays department view, low inventory, adding stock and adding new products)  
-![node bamazonManager.js](./assets/images/example-manager.mp4)  
+![Manager Portal](./assets/images/example-manager.gif)  
+![Manager - MP4 Download](./assets/images/example-manager.mp4)  
    
 __3) Bonus Feature - Bamazon Supervisor Portal__  
   Video file to demontrate the overall Supervisor's application  (displays department finances, adds a new department, shows the department view in the manager portal and adds a product to the new department, demonstrates a customer purchase of that new product.  Closes with the supervisors financial view of that new department sales )  
-![node bamazonSupervisor.js](./assets/images/example-supervisor.mp4)  
+![Supervisor Portal](./assets/images/example-supervisor.gif)  
+![Supervisor - MP4 Download](./assets/images/example-supervisor.mp4)  
   
 ### Developer notes  
 - **.env:**  environment variables used by dotenv package holding secret keys and passwords for mySQL, not included in GIT  
