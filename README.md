@@ -5,21 +5,21 @@ A CLI based e-commerce website developed with Node.js and MySQL
 Bamazon is an Amazon-like storefront developed in node and leveraging a MySQL backend. The app takes orders from customers and depletes stock from the store's inventory. The bonus features track product sales across the store's departments and  provides a summary of the highest-grossing departments in the store  
   
 ## Customer Portal capabilties
-  1) View Proudcts for Sale - displays a listing of product id, name, department, price and stock quantity (except those not in stock)  
-  2) Purchase an Item - prompts user for purchase by product number and quantity, updates the sales records  
-  3) Exit Store - closes sql connection and exits the prompts  
+  1) __View Proudcts for Sale__ - displays a listing of product id, name, department, price and stock quantity (except those not in stock)  
+  2) __Purchase an Item__ - prompts user for purchase by product number and quantity, updates the sales records  
+  3) __Exit Store__ - closes sql connection and exits the prompts  
 
 ## Manager Portal capabilties
-  1) View Proudcts for Sale - displays a listing of product id, name, department, price and stock quantity (including those out of stock)  
-  2) View Low Inventory - displays a list of product id, name, department and stock quantity for all items with a quantity of 5 or less  
-  3) Add to Inventory - add to the stock quantity of an item based on product id  
-  4) Add New Product - add a new product to an existing department based on prod id, department id, product name, price and stock quantity  
-  5) Exit Store - closes sql connection and exits the prompts  
+  1) __View Proudcts for Sale__ - displays a listing of product id, name, department, price and stock quantity (including those out of stock)  
+  2) __View Low Inventory__ - displays a list of product id, name, department and stock quantity for all items with a quantity of 5 or less  
+  3) __Add to Inventory__ - add to the stock quantity of an item based on product id  
+  4) __Add New Product__ - add a new product to an existing department based on prod id, department id, product name, price and stock quantity  
+  5) __Exit Store__ - closes sql connection and exits the prompts  
 
 ## Supervisor Portal capabilties
-  1) View Product Sales by Department - view department id, name, sales, overhead cost and total profit by department
-  2) Create New Department - add a new department with an id, name and overhead cost
-  3) Exit Store - closes sql connection and exits the prompts  
+  1) __View Product Sales by Department__ - view department id, name, sales, overhead cost and total profit by department
+  2) __Create New Department__ - add a new department with an id, name and overhead cost
+  3) __Exit Store__ - closes sql connection and exits the prompts  
 
 __Command line syntax:__   
 Bamazon supports the follow commands and yields the corresponding content:  
