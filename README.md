@@ -3,15 +3,32 @@ A CLI based e-commerce website developed with Node.js and MySQL
 
 ## Overview  
 Bamazon is an Amazon-like storefront developed in node and leveraging a MySQL backend. The app takes orders from customers and depletes stock from the store's inventory. The bonus features track product sales across the store's departments and  provides a summary of the highest-grossing departments in the store  
+  
+## Customer Portal capabilties
+  1) View Proudcts for Sale - displays a listing of product id, name, department, price and stock quantity (except those not in stock)  
+  2) Purchase an Item - prompts user for purchase by product number and quantity, updates the sales records  
+  3) Exit Store - closes sql connection and exits the prompts  
+
+## Manager Portal capabilties
+  1) View Proudcts for Sale - displays a listing of product id, name, department, price and stock quantity (including those out of stock)  
+  2) View Low Inventory - displays a list of product id, name, department and stock quantity for all items with a quantity of 5 or less  
+  3) Add to Inventory - add to the stock quantity of an item based on product id  
+  4) Add New Product - add a new product to an existing department based on prod id, department id, product name, price and stock quantity  
+  5) Exit Store - closes sql connection and exits the prompts  
+
+## Supervisor Portal capabilties
+  1) View Product Sales by Department - view department id, name, sales, overhead cost and total profit by department
+  2) Create New Department - add a new department with an id, name and overhead cost
+  3) Exit Store - closes sql connection and exits the prompts  
 
 __Command line syntax:__   
 Bamazon supports the follow commands and yields the corresponding content:  
   
-|       | Command           | Result                                       |
-| ----- | ----------------- | -------------------------------------------- |
-| __1__ | node bamazonCustomer.js | Customer Portal to view and purchase products from the online store |
-| __2__ | node bamazonManager.js  | Manager Portal to check inventory, add stock, and add new products  |
-| __3__ | node bamazonSupervisor.js  | Supervisor Portal to check department finances and add new departments |
+|       | Command                    | Result                                       |
+| ----- | -------------------------- | -------------------------------------------- |
+| __1__ | `node bamazonCustomer.js`  | Customer Portal to view and purchase products from the online store |
+| __2__ | `node bamazonManager.js`   | Manager Portal to check inventory, add stock, and add new products  |
+| __3__ | `node bamazonSupervisor.js`| Supervisor Portal to check department finances and add new departments |
 
 ### Demonstration of Functionality  
   
@@ -48,8 +65,19 @@ __3) Bonus Feature - Bamazon Supervisor Portal__
    `npm install`  
 4. Download and install the latest version of mySQL  
    ` https://www.mysql.com/downloads/`   
-5. Execute the schemas.sql from the scripts directory in MySQLWorkbench to create the tables and populate some sample data  
-6. Run a command manuallly from the command line  
+5. This package requires a database configuration and password for mySQL. The parameters are captured in a .env file which must be supplied to the root directory of the project.  Use the installation of mySQLWorkbench to configure the installation and then use your favorite IDE to enter the following keys-values pairs to the .env file with your id and passowrd:  
+  
+| File        | Parameters needed for mySQL                                          |
+| ----------- | -------------------------------------------------------------------- |
+| .env        | DB_HOST=__your mySQL host name__   (usually localhost)               | 
+|             | DB_USER=__your mySQL account__     (usually root)                    |
+|             | DB_PWD=__your mySQL password__                                       |
+|             | DB_PORT=__your mySQL port__        (usually 3306)                    |
+  
+__Note:__  the .gitignore file is coded to prevent your config and password from being shared in your git repository pubically    
+
+1. Execute the schemas.sql from the scripts directory in MySQLWorkbench to create the tables and populate some sample data  
+2. Run a command manuallly from the command line  
    `node bamazonCustomer.js`  
   
 ### Technology Used  
@@ -61,7 +89,8 @@ __3) Bonus Feature - Bamazon Supervisor Portal__
 | npm Inquirer      | __6.2.0__   | Library to handle the command line prompting                             |
 | npm dotenv        | __6.2.0__   | Utility package to hide the secret keys in a .env file and away from git |
 | npm cli-table     | __0.3.1__   | Command line interface utility                                           |
-| colors            | __1.3.2__   | String package to manage ascii text color                                |
+| npm color         | __1.3.2__   | String package to manage ascii text color                                |
+| mySQL Workbench   | __8.0.13__  | mySQL IDE to run schema.sql database configuration file                  | 
 
 ## Authors  
 Michael Galarneau - Initial work - five0ffour  
