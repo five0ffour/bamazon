@@ -26,7 +26,7 @@ function start() {
         type: 'rawlist',
         name: 'choice',
         message: 'What would you like to do?',
-        choices: ["View Product For Sale", "Purchase an Item", "Exit Store"]
+        choices: ["View Products For Sale", "Purchase an Item", "Exit Store"]
     }];
     inquirer.prompt(questions).then(answers => {
         mainMenu(answers.choice);
@@ -35,7 +35,7 @@ function start() {
 
 function mainMenu(choice) {
     switch (choice) {
-        case "View Product For Sale":
+        case "View Products For Sale":
             displayAvailableInventory();
             break;
 
