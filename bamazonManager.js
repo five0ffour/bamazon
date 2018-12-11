@@ -5,18 +5,12 @@ const Table = require('cli-table');
 const colors = require('colors/safe');
 
 const keys = require("./keys.js");
+var bamazon = require("./utils.js");
 
-const bamazon = mysql.createConnection({
-    host: keys.mysql.host,
-    port: keys.mysql.port,
-    user: keys.mysql.user,
-    password: keys.mysql.password
-});
-
-bamazon.connect(function (err) {
-    if (err) throw err;
-    start();
-});
+/*----------------------------*/
+/* Entry point to application */
+/*----------------------------*/
+start();
 
 function start() {
     var questions = [{
