@@ -35,11 +35,11 @@ function displayAvailableInventory() {
         head: ['Product #', 'Department', 'Product', 'Price', 'Qty In Stock'],
         colWidths: [15, 20, 30, 15, 15]
     });
-    
-    var query = "SELECT item_id, department_name, product_name, price, stock_quantity FROM bamazon.products " + 
-                "INNER JOIN bamazon.departments ON products.department_id = departments.department_id " +
-                "WHERE stock_quantity > 0 " + 
-                "ORDER BY department_name, product_name ASC";
+
+    var query = "SELECT item_id, department_name, product_name, price, stock_quantity FROM bamazon.products " +
+        "INNER JOIN bamazon.departments ON products.department_id = departments.department_id " +
+        "WHERE stock_quantity > 0 " +
+        "ORDER BY department_name, product_name ASC";
     bamazon.query(query, function (err, res) {
         if (err) throw (err);
 
@@ -85,7 +85,7 @@ function queryItem(itemNum, requestedQuantity) {
     var post = {
         item_id: itemNum
     };
-    var query = bamazon.query("SELECT product_name, price, stock_quantity FROM bamazon.products WHERE ?", post, function (err, res) {
+    var query = bamazon.query("SELECT product_name, price, stock_quantity, product_sales FROM bamazon.products WHERE ?", post, function (err, res) {
         if (err) throw err;
 
         if (parseInt(res[0].stock_quantity) >= parseInt(requestedQuantity)) {
@@ -101,10 +101,16 @@ function queryItem(itemNum, requestedQuantity) {
 function purchaseItem(requestedQuantity, item) {
 
     var newQty = parseInt(item.stock_quantity) - parseInt(requestedQuantity);
+    var totalCost = Math.round(parseInt(requestedQuantity) * parseFloat(item.price) * 100) / 100;
+    var totalSale = Math.round((parseFloat(item.product_sales) + totalCost) * 100) / 100;
+
     var query = bamazon.query(
-        "UPDATE bamazon.products SET ? WHERE ?",
-        [{
+        "UPDATE bamazon.products SET ?, ? WHERE ?",
+        [   {
                 stock_quantity: newQty
+            },
+            {
+                product_sales: totalSale
             },
             {
                 product_name: item.product_name
@@ -112,7 +118,6 @@ function purchaseItem(requestedQuantity, item) {
         ],
         function (err, res) {
             if (err) throw err;
-            var totalCost = Math.round(parseInt(requestedQuantity) * parseFloat(item.price) * 100) / 100;
             console.log("\nSuccess! Thank you for purchasing (" + colors.green(requestedQuantity) + ") " + colors.green(item.product_name) + "(s)");
             console.log("Your account will be billed for a total of " + colors.red("$" + totalCost) + " and your order will be shipped to the address on file\n");
 
