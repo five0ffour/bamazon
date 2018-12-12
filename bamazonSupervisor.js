@@ -6,6 +6,7 @@ const colors = require('colors/safe');
 
 const myUtils = require("./utils.js");
 const bamazon =  myUtils.bamazon;
+const exitStore = myUtils.exitStore;
 const validateNumber = myUtils.validateNumber;
 const validateText = myUtils.validateText;
 
@@ -41,10 +42,6 @@ function mainMenu(choice) {
             exitStore();
             break;
     }
-}
-
-function exitStore() {
-    bamazon.end();
 }
 
 function displaySalesByDepartment() {

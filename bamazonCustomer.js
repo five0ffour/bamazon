@@ -4,15 +4,18 @@ const inquirer = require("inquirer");
 var Table = require('cli-table');
 var colors = require('colors/safe');
 
+// Common utility Functions across applications - DRY
 const myUtils = require("./utils.js");
 const bamazon =  myUtils.bamazon;
+const exitStore = myUtils.exitStore;
 const validateNumber = myUtils.validateNumber;
 
-/*---------------------------*/
+/*----------------------------*/
 /* Entry point to application */
 /*---------------------------*/
 start();
 
+// Start() - Entry point of the app, displays and prcoesses the main menu choices 
 function start() {
     var questions = [{
         type: 'rawlist',
@@ -25,6 +28,7 @@ function start() {
     });
 }
 
+// mainMenu() - logic to process the menu choice
 function mainMenu(choice) {
     switch (choice) {
         case "View Products For Sale":
@@ -37,20 +41,17 @@ function mainMenu(choice) {
 
         case "Exit Store":
         default:
-            exitStore();
+            exitStore("Thank you!  Come again soon!");
             break;
     }
 }
 
-function exitStore() {
-    bamazon.end();
-}
-
+// displayAvailableInventory() - option 1 from main menu,  display store products *that are in stock!*
 function displayAvailableInventory() {
 
     const table = new Table({
         head: ['Product #', 'Department', 'Product', 'Price', 'Qty In Stock'],
-        colWidths: [15, 20, 30, 15, 15]
+        colWidths: [15, 20, 35, 15, 15]
     });
 
     var query = "SELECT item_id, department_name, product_name, price, stock_quantity FROM bamazon.products " +
@@ -76,6 +77,7 @@ function displayAvailableInventory() {
     });
 }
 
+// promptStore() - option #2 from main menu,  processes the main customer purchase chocies 
 function promptStore() {
     var questions = [{
             type: 'input',
@@ -100,23 +102,28 @@ function promptStore() {
 
 }
 
+
+// queryItem() - looks for a specific item in the database and validates that there are enough in stock
 function queryItem(itemNum, requestedQuantity) {
     var post = {
         item_id: itemNum
     };
     var query = bamazon.query("SELECT product_name, price, stock_quantity, product_sales FROM bamazon.products WHERE ?", post, function (err, res) {
-        if (err) throw err;
+        if (err) throw (err);
 
-        if (parseInt(res[0].stock_quantity) >= parseInt(requestedQuantity)) {
+        if (res.length === 0) {
+            console.log("\nI'm sorry,  I can't find an product with that item number\n");
+            promptAnotherPurchase();
+        } else if (parseInt(res[0].stock_quantity) >= parseInt(requestedQuantity)) {
             purchaseItem(requestedQuantity, res[0]);
         } else {
-            console.log("\nI'm sorry,  we don't have enough of that item in stock.  We'll have more in soon!");
+            console.log("\nI'm sorry,  We don't have enough of that item in stock.  We'll have more in soon!\n");
             promptAnotherPurchase();
         }
-
     });
 }
 
+// purchaseItem() - updates the database stock quantity and records to purchase sales totals 
 function purchaseItem(requestedQuantity, item) {
 
     var newQty = parseInt(item.stock_quantity) - parseInt(requestedQuantity);
@@ -145,6 +152,7 @@ function purchaseItem(requestedQuantity, item) {
     );
 }
 
+// promptAnotherPurchase() - simple choice to ask customer to continue shopping by displaying the store items or exit the app
 function promptAnotherPurchase() {
     var questions = [{
         type: 'confirm',
@@ -155,8 +163,7 @@ function promptAnotherPurchase() {
         if (answers.choice) {
             displayAvailableInventory();
         } else {
-            console.log("\nThank you!  Come again soon! We appreciate your business!");
-            exitStore();
+            exitStore("Thank you!  Come again soon! We appreciate your business!");
         }
     });
 }

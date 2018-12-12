@@ -6,6 +6,7 @@ const colors = require('colors/safe');
 
 const myUtils = require("./utils.js");
 const bamazon =  myUtils.bamazon;
+const exitStore = myUtils.exitStore;
 const validateNumber = myUtils.validateNumber;
 const validatePrice = myUtils.validatePrice;
 const validateText = myUtils.validateText;
@@ -15,6 +16,7 @@ const validateText = myUtils.validateText;
 /*----------------------------*/
 start();
 
+// start() - displays the main menu and gets the user's choice
 function start() {
     var questions = [{
         type: 'rawlist',
@@ -27,6 +29,7 @@ function start() {
     });
 }
 
+// mainMenu() - processes the menu choices selected by the user
 function mainMenu(choice) {
     switch (choice) {
         case "View Products for Sale":
@@ -47,14 +50,10 @@ function mainMenu(choice) {
 
         case "Exit Store":
         default:
-            console.log("\nThank you!  Come again soon! We appreciate your business!");
+            console.log("\nThank you!  Come again soon!");
             exitStore();
             break;
     }
-}
-
-function exitStore() {
-    bamazon.end();
 }
 
 function displayAllInventory() {
@@ -137,8 +136,13 @@ function addItemsToInventory(itemNum, newItems) {
     bamazon.query(query, post, function (err, res) {
         if (err) throw (err);
 
-        var newQty = parseInt(newItems) + parseInt(res[0].stock_quantity);
-        postNewItems(itemNum, newQty);
+        if (res.length === 0) {
+            console.log("\nI'm sorry,  I can't find a product with that item number\n");
+            displayAllInventory();
+        } else {
+            var newQty = parseInt(newItems) + parseInt(res[0].stock_quantity);
+            postNewItems(itemNum, newQty);
+        }
     });
 }
 
@@ -216,11 +220,16 @@ function addNewProduct(answers) {
     ];
     let query = "INSERT INTO bamazon.products (item_id, product_name, department_id, price, stock_quantity, product_sales)" + 
                 "VALUES (?, ?, ?, ?, ?, 0)";
+                
+
     bamazon.query(query, post, function (err, res) {
-        if (err) throw (err);
-
-        console.log("\nSuccess! Your product(s) " + colors.green(answers.itemName) + " were succssfully added to the inventory\n");
-
-        displayAllInventory();
+        if (err) {
+            console.log("\nSorry! The product id " + colors.red(answers.itemNum) + " is already taken.\n");
+            start();
+        }
+        else {
+            console.log("\nSuccess! Your product(s) " + colors.green(answers.itemName) + " were succssfully added to the inventory\n");
+            displayAllInventory();
+        }
     });
 }

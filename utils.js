@@ -14,11 +14,18 @@ bamazon.connect(function (err) {
     if (err) throw err;
 });
 
+// exit() - closes the database connection and display optional message
+function exitStore(msg) {
+    if (msg) {
+        console.log("\n" + msg + "\n");
+    }
+    bamazon.end();
+}
+
 function validateNumber(num)
 {
     let reg = /^[0-9]+$/;
     if (!reg.test(num)) {
-    //    console.log("\nSorry! We can only accept a whole number here.");
         return false;
     }
 
@@ -30,7 +37,6 @@ function validatePrice(price) {
        
     let reg = /^\d{0,8}(\.\d{1,4})?$/;
     if (!reg.test(price)) {
-  //      console.log("\nSorry! We can only accept a decimal number here.");
         return false;
     }
 
@@ -40,11 +46,9 @@ function validatePrice(price) {
 
 function validateText (text) {
 
-    // Regex expression parsing,  accept alphanumerics only, upper or lower case
-    // let reg = /^[a-zA-Z]*$/;
+    // Regex expression parsing,  accept alphanumerics only, upper or lower case, lines and spaces
     let reg = /^[a-zA-Z\d\-_\s]+$/i; 
     if (!reg.test(text)) {
-//        console.log("Sorry! We can only accept a alphanumerics here.");
         return false;
     }
 
@@ -52,12 +56,6 @@ function validateText (text) {
     return true;
 }
 
-module.exports = {
-    bamazon : bamazon,
-    validateNumber : validateNumber,
-    validateNumber : validatePrice,
-    validateText   : validateText
-}
 
 function unitTest() {
     // These should pass
@@ -71,4 +69,13 @@ function unitTest() {
     console.log(validateText("Mike G %")   ? "success text - wrong"     : "fail text - correct");
 }
 
+module.exports = {
+    bamazon : bamazon,
+    exitStore : exitStore,
+    validateNumber : validateNumber,
+    validateNumber : validatePrice,
+    validateText   : validateText
+}
+
+/* UNIT TEST to valdiate string logic - uncomment and run this module to test */
 // unitTest();

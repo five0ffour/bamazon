@@ -32,7 +32,7 @@ Bamazon supports the follow commands and yields the corresponding content:
 
 ### Demonstration of Functionality  
   
-Each of the videos provides an example of to use each of the applications:  
+Each of the videos provides an example of to use each of the applications (input validation checks not shown):  
   
 __1) Bamazon Customer Portal__     
   Video file to demontrate the Bamazon Customer application (displays inventory and a sample purchase)   
@@ -55,6 +55,7 @@ __3) Bonus Feature - Bamazon Supervisor Portal__
 - **bamazonCustomer.js:** display logic and SQL code for the Customer Portal   
 - **bamazonManager.js:** display logic and SQL code for the Department Manager Portal   
 - **bamazonSupervisor.js:** display logic and SQL code for the Supervisor Portal  
+- **utils.js:** common functions,  database connection and input validation scripts
  
  ### How to install/run the application  
 1. Download and install the latest version of Node.js following the website instructions for your platform  
