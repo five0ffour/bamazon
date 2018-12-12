@@ -1,5 +1,7 @@
-var dotenv = require("dotenv").config();
-const mysql = require("mysql");
+//--------------------------------------------------------------------------------------------------
+// bamazonManagerjs - An app for the Customer's shopping functionality of the store 
+//                  -  README.md captures the app functionality and will not be repeated here
+//--------------------------------------------------------------------------------------------------
 const inquirer = require("inquirer");
 var Table = require('cli-table');
 var colors = require('colors/safe');

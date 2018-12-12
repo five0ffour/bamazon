@@ -1,11 +1,13 @@
-const dotenv = require("dotenv").config();
-const mysql = require("mysql");
+//--------------------------------------------------------------------------------------------------
+// bamazonManagerjs - An app for the Department Manager's Operational view of inventory management
+//                  -  README.md captures the app functionality and will not be repeated here
+//--------------------------------------------------------------------------------------------------
 const inquirer = require("inquirer");
 const Table = require('cli-table');
 const colors = require('colors/safe');
 
 const myUtils = require("./utils.js");
-const bamazon =  myUtils.bamazon;
+const bamazon = myUtils.bamazon;
 const exitStore = myUtils.exitStore;
 const validateNumber = myUtils.validateNumber;
 const validatePrice = myUtils.validatePrice;
@@ -29,7 +31,9 @@ function start() {
     });
 }
 
+//----------------------------------------
 // mainMenu() - processes the menu choices selected by the user
+//----------------------------------------
 function mainMenu(choice) {
     switch (choice) {
         case "View Products for Sale":
@@ -50,12 +54,15 @@ function mainMenu(choice) {
 
         case "Exit Store":
         default:
-            console.log("\nThank you!  Come again soon!");
+            console.log("\nThank you!  Have a great sales day!");
             exitStore();
             break;
     }
 }
 
+//----------------------------------------
+// displayAllInventory() -  menu option 1, query tp display *all* inventory (that is assigned to a department)
+//----------------------------------------
 function displayAllInventory() {
 
     var query = "SELECT item_id, department_name, product_name, price, stock_quantity FROM bamazon.products " +
@@ -69,6 +76,9 @@ function displayAllInventory() {
     });
 }
 
+//----------------------------------------
+// displayLowInentory() - menu option 2, query to display any inventory that is equal to or below 5 items in stock 
+//----------------------------------------
 function displayLowInventory() {
 
     var query = "SELECT item_id, department_name, product_name, price, stock_quantity FROM bamazon.products " +
@@ -83,6 +93,7 @@ function displayLowInventory() {
     });
 }
 
+// dispalyInentoryTable() - console write a table displaying the inventory in a pretty formatted output
 function displayInventoryTable(res) {
 
     const table = new Table({
@@ -104,6 +115,9 @@ function displayInventoryTable(res) {
     console.log(table.toString());
 }
 
+//----------------------------------------
+// promptToAddNewStock() - menu option 3, prompts to ask the user what item and amount to add to stock
+//----------------------------------------
 function promptToAddNewStock() {
     var questions = [{
             type: 'input',
@@ -127,6 +141,7 @@ function promptToAddNewStock() {
     });
 }
 
+// addItemsToInventory() - two part query,  looks for the item to add to stock and then calls query to update the stock 
 function addItemsToInventory(itemNum, newItems) {
     let post = {
         "item_id": itemNum
@@ -146,6 +161,7 @@ function addItemsToInventory(itemNum, newItems) {
     });
 }
 
+// postNewItems() - query to update the stock quantity of an existing product
 function postNewItems(itemNum, newQty) {
     let query = "UPDATE bamazon.products SET stock_quantity=? WHERE item_id=? ";
     bamazon.query(query, [newQty, itemNum], function (err, res) {
@@ -156,8 +172,10 @@ function postNewItems(itemNum, newQty) {
     });
 }
 
-//---------------------------
 
+//----------------------------------------
+// promptToAddNewProduct() - menu option 4,  walk the user through the prompts to add a brand new item to inventory
+//----------------------------------------
 function promptToAddNewProduct() {
 
     var questions = [{
@@ -209,6 +227,7 @@ function promptToAddNewProduct() {
     });
 }
 
+// addNewProduct() - query to insert a new product into the products table
 function addNewProduct(answers) {
 
     let post = [
@@ -218,16 +237,15 @@ function addNewProduct(answers) {
         answers.price,
         answers.quantity
     ];
-    let query = "INSERT INTO bamazon.products (item_id, product_name, department_id, price, stock_quantity, product_sales)" + 
-                "VALUES (?, ?, ?, ?, ?, 0)";
-                
+    let query = "INSERT INTO bamazon.products (item_id, product_name, department_id, price, stock_quantity, product_sales)" +
+        "VALUES (?, ?, ?, ?, ?, 0)";
+
 
     bamazon.query(query, post, function (err, res) {
         if (err) {
             console.log("\nSorry! The product id " + colors.red(answers.itemNum) + " is already taken.\n");
             start();
-        }
-        else {
+        } else {
             console.log("\nSuccess! Your product(s) " + colors.green(answers.itemName) + " were succssfully added to the inventory\n");
             displayAllInventory();
         }

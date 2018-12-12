@@ -1,3 +1,6 @@
+//-------------------------------------------------------------------------------------------
+// utils.js -  commmon functions across all three apps.  Database connection management and validation functions 
+//-------------------------------------------------------------------------------------------
 var dotenv = require("dotenv").config();
 const mysql = require("mysql");
 
@@ -55,7 +58,6 @@ function validateText (text) {
     reg.lastIndex = 0;
     return true;
 }
-
 
 function unitTest() {
     // These should pass

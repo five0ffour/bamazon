@@ -1,3 +1,8 @@
+//--------------------------------------------------------------------------------------------------
+// bamazonSupervisor.js - An app for the Exedutive Financial View of Department Performance
+//                      -  README.md captures the app functionality and will not be repeated here
+//--------------------------------------------------------------------------------------------------
+
 const dotenv = require("dotenv").config();
 const mysql = require("mysql");
 const inquirer = require("inquirer");
@@ -27,6 +32,9 @@ function start() {
     });
 }
 
+//----------------------------------------
+// mainMenu() -  processes the menu choices selected by the user
+//----------------------------------------
 function mainMenu(choice) {
     switch (choice) {
         case "View Product Sales by Department":
@@ -39,11 +47,14 @@ function mainMenu(choice) {
 
         case "Exit Store":
         default:
-            exitStore();
+            exitStore("Thank you.  Have a profitable day!");
             break;
     }
 }
 
+//---------------------------------------------
+// displaySalesByDepartment() - menu option 1, queries to display all departments and their finacial status 
+//---------------------------------------------
 function displaySalesByDepartment() {
 
     var query = "SELECT departments.department_id, department_name, overhead_costs, " +
@@ -61,6 +72,9 @@ function displaySalesByDepartment() {
     });
 }
 
+//---------------------------------------------
+// promptCreateNewDepartment() - menu option 2, prompts and updates for a new department entry to the database
+//---------------------------------------------
 function promptCreateNewDepartment() {
     var questions = [{
         type: 'input',
@@ -90,6 +104,7 @@ function promptCreateNewDepartment() {
     });
 }
 
+// addNewDepartment() - datbase queryt to add the department to the database
 function addNewDeparment(newDepartment) {
     var post = [
         newDepartment.department_id,
@@ -99,14 +114,18 @@ function addNewDeparment(newDepartment) {
     let query = "INSERT INTO bamazon.departments (department_id, department_name, overhead_costs) " + 
                  "VALUES( ?, ? , ?)";
     bamazon.query(query, post, function (err, res) {
-        if (err) throw(err);
-
-        console.log("\nSuccess!  Added " + colors.green(newDepartment.department_name) + " to the department database");
-        displayAllDepartments();
+        if (err) {
+            console.log("\nSorry! Department number " +colors.red(newDepartment.department_id) + " is already being used\n" );
+            start();
+        } else {
+            console.log("\nSuccess!  Added " + colors.green(newDepartment.department_name) + " to the department database");
+            displayAllDepartments();    
+        }
     });
 
 }
 
+// displayDepartmentSalesTable() - pretty print the department sales table to the console
 function displayDepartmentSalesTable(res) {
 
     const table = new Table({
@@ -129,7 +148,7 @@ function displayDepartmentSalesTable(res) {
     console.log(table.toString());
 }
 
-
+// displayAllDepartments() - sql query to pull all departments and their basic stats
 function displayAllDepartments() {
 
     var query = "SELECT department_id, department_name, overhead_costs " +
@@ -143,6 +162,7 @@ function displayAllDepartments() {
     });
 }
 
+// displayDepartmentTable() - pretty console print  the department information in table format
 function displayDepartmentTable(res) {
 
     const table = new Table({
