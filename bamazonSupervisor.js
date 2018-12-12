@@ -4,8 +4,10 @@ const inquirer = require("inquirer");
 const Table = require('cli-table');
 const colors = require('colors/safe');
 
-const keys = require("./keys.js");
-var bamazon = require("./utils.js");
+const myUtils = require("./utils.js");
+const bamazon =  myUtils.bamazon;
+const validateNumber = myUtils.validateNumber;
+const validateText = myUtils.validateText;
 
 /*----------------------------*/
 /* Entry point to application */
@@ -67,16 +69,19 @@ function promptCreateNewDepartment() {
         type: 'input',
         name: 'departmentNum',
         message: 'What is the new department number?',
+        validate : validateNumber
     },
     {
         type: 'input',
         name: 'departmentName',
         message: 'What is the new department name?',
+        validate: validateText
     },
     {
         type: 'input',
         name: 'overheadCosts',
         message: 'What is the department overhead costs?',
+        validate : validateNumber
     },
     ];
     inquirer.prompt(questions).then(answers => {

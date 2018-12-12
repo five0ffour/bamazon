@@ -4,8 +4,9 @@ const inquirer = require("inquirer");
 var Table = require('cli-table');
 var colors = require('colors/safe');
 
-var keys = require("./keys.js");
-var bamazon = require("./utils.js");
+const myUtils = require("./utils.js");
+const bamazon =  myUtils.bamazon;
+const validateNumber = myUtils.validateNumber;
 
 /*---------------------------*/
 /* Entry point to application */
@@ -79,12 +80,14 @@ function promptStore() {
     var questions = [{
             type: 'input',
             name: 'itemNum',
-            message: 'What item # would you like to buy?'
+            message: 'What item # would you like to buy?',
+            validate: validateNumber
         },
         {
             type: 'input',
             name: 'quantity',
             message: 'How many would you like to buy?',
+            validate: validateNumber,
             when: function (answers) {
                 return answers.itemNum;
             }

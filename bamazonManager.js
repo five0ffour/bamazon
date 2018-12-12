@@ -4,8 +4,11 @@ const inquirer = require("inquirer");
 const Table = require('cli-table');
 const colors = require('colors/safe');
 
-const keys = require("./keys.js");
-var bamazon = require("./utils.js");
+const myUtils = require("./utils.js");
+const bamazon =  myUtils.bamazon;
+const validateNumber = myUtils.validateNumber;
+const validatePrice = myUtils.validatePrice;
+const validateText = myUtils.validateText;
 
 /*----------------------------*/
 /* Entry point to application */
@@ -106,12 +109,14 @@ function promptToAddNewStock() {
     var questions = [{
             type: 'input',
             name: 'itemNum',
-            message: 'Which item # would you stock up?'
+            message: 'Which item # would you stock up?',
+            validate: validateNumber,
         },
         {
             type: 'input',
             name: 'quantity',
             message: 'How many units will you be adding?',
+            validate: validateNumber,
             when: function (answers) {
                 return answers.itemNum;
             }
@@ -154,12 +159,14 @@ function promptToAddNewProduct() {
     var questions = [{
             type: 'input',
             name: 'itemNum',
-            message: 'What is the item number for the new product being added?'
+            message: 'What is the item number for the new product being added?',
+            validate: validateNumber
         },
         {
             type: 'input',
             name: 'itemName',
             message: 'What is the name of the product?',
+            validate: validateText,
             when: function (answers) {
                 return answers.itemNum;
             }
@@ -168,6 +175,7 @@ function promptToAddNewProduct() {
             type: 'input',
             name: 'departmentNum',
             message: 'Which department (number) would you like to add it to?',
+            validate: validateNumber,
             when: function (answers) {
                 return answers.itemNum;
             }
@@ -176,6 +184,7 @@ function promptToAddNewProduct() {
             type: 'input',
             name: 'quantity',
             message: 'How many units will you be adding?',
+            validate: validateNumber,
             when: function (answers) {
                 return answers.departmentNum;
             }
@@ -184,6 +193,7 @@ function promptToAddNewProduct() {
             type: 'input',
             name: 'price',
             message: 'What price will it be listed at?',
+            validate: validatePrice,
             when: function (answers) {
                 return answers.quantity;
             }
@@ -214,5 +224,3 @@ function addNewProduct(answers) {
         displayAllInventory();
     });
 }
-
-
