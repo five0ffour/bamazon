@@ -66,7 +66,7 @@ __3) Bonus Feature - Bamazon Supervisor Portal__
    `npm install`  
 4. Download and install the latest version of mySQL  
    ` https://www.mysql.com/downloads/`   
-5. This package requires a database configuration and password for mySQL. The parameters are captured in a .env file which must be supplied to the root directory of the project.  Use the installation of mySQLWorkbench to configure the installation and then use your favorite IDE to enter the following keys-values pairs to the .env file with your id and passowrd:  
+5. This package requires a database configuration and password for mySQL. The parameters are captured in a .env file which must be supplied to the root directory of the project.  Use the installation of mySQLWorkbench to configure the installation and then use your favorite IDE to enter the following keys-values pairs to the .env file with your id and password:  
   
 | File        | Parameters needed for mySQL                                          |
 | ----------- | -------------------------------------------------------------------- |
@@ -75,7 +75,7 @@ __3) Bonus Feature - Bamazon Supervisor Portal__
 |             | DB_PWD=__your mySQL password__                                       |
 |             | DB_PORT=__your mySQL port__        (usually 3306)                    |
   
-__Note:__  the .gitignore file is coded to prevent your config and password from being shared in your git repository pubically    
+__Note:__  the .gitignore file is coded to prevent your config and password from being shared in your git repository publically    
 
 1. Execute the schemas.sql from the scripts directory in MySQLWorkbench to create the tables and populate some sample data  
 2. Run a command manuallly from the command line  
